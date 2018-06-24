@@ -132,6 +132,7 @@ def download_single(raw_song, number=None):
 
     # generate file name of the song to download
     songname = content.title
+    
 
     if meta_tags is not None:
         refined_songname = internals.format_string(const.args.file_format,
@@ -147,6 +148,9 @@ def download_single(raw_song, number=None):
     if const.args.dry_run:
         return
 
+    print("SONGNAME:", songname)
+
+    #try:
     if not check_exists(songname, raw_song, meta_tags):
         # deal with file formats containing slashes to non-existent directories
         songpath = os.path.join(const.args.folder, os.path.dirname(songname))
@@ -159,6 +163,7 @@ def download_single(raw_song, number=None):
                 convert.song(input_song, output_song, const.args.folder,
                              avconv=const.args.avconv)
             except FileNotFoundError:
+                print("\nFAILED - skipping conversion\n")
                 encoder = 'avconv' if const.args.avconv else 'ffmpeg'
                 log.warning('Could not find {0}, skipping conversion'.format(encoder))
                 const.args.output_ext = const.args.input_ext
@@ -168,7 +173,12 @@ def download_single(raw_song, number=None):
                 os.remove(os.path.join(const.args.folder, input_song))
             if not const.args.no_metadata and meta_tags is not None:
                 metadata.embed(os.path.join(const.args.folder, output_song), meta_tags)
+            print("SUCCESS Marker")
             return True
+    #except ValueError:
+    #    print("FAILED to get artwork")
+    #    return
+    print("SUCCESS")
 
 
 def main():
