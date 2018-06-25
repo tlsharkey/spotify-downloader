@@ -10,34 +10,113 @@ spotdl = 'python3 {}spotdl.py'.format(spotdl_loc)
 playlists = []
 
 
+def setConfig():
+    import tkinter as tk
+    from tkinter import filedialog
+    global rows_used, playlist_data, saveLab, saveLoc
+    
+    
+    print("Configuring...")
+
+    # setup tkinter
+    window = tk.Tk()
+    window.title("Playlists")
+    mainframe = tk.Frame(window)
+    mainframe.grid(column=3, row=100)
+
+    # save location
+    saveLoc = ''
+    def getSaveLocation():
+        global saveLoc
+        tk.Tk().withdraw()
+        saveLoc = str(filedialog.askdirectory())
+        global saveLab; saveLab.config(text='not saved')
+        
+    tk.Button(mainframe, text="Set Save Location", command=getSaveLocation).grid(column=0, row=0, columnspan=2)
+    
+
+    # get playlist information
+    playlist_data = []
+    rows_used = 1
+    def getInputBoxes():
+        global rows_used, playlist_data, saveLab
+        row = rows_used
+        name = tk.StringVar(master=mainframe, value='My Playlist')
+        link = tk.StringVar(master=mainframe, value='https://open.spotify.com/user/12345678910/playlist/1vgf25da1f221df2d')
+
+        name_entry = tk.Entry(mainframe, textvariable=name)
+        name_entry.grid(column=0, row=row)
+        link_entry = tk.Entry(mainframe, textvariable=link)
+        link_entry.grid(column=1, row=row)
+
+        rows_used += 1
+        playlist_data.append((name, link, name_entry, link_entry))
+        
+        saveLab.config(text='not saved')
+        
+    tk.Button(mainframe, text="Add Playlist", command=getInputBoxes).grid(column=3, row=0)
+
+    # save button
+    saveLab = tk.Label(mainframe, text="not saved")
+    saveLab.grid(column=3, row=1)
+    def save():
+        global saveLab, saveLoc
+        with open('SpotifySync_Config.txt', 'w') as config:
+            config.write("___Save Location:\n")
+            config.write(saveLoc+"/\n")
+            config.write("___Playlists:\n")
+            for playlist in playlist_data:
+                config.write(playlist[0].get() + " | " + playlist[1].get() + "\n")
+            config.write("___End of Playlists___")
+        saveLab.config(text='saved.')
+    tk.Button(mainframe, text="Save", command=save).grid(column=3, row=2)
+    getInputBoxes()
+
+    #Add space
+    tk.Canvas(mainframe, width=100, height=0).grid(column=2, row=0)
+    tk.Canvas(mainframe, width=0, height=20).grid(column=0, row=99)
+    tk.Canvas(mainframe, width=200, height=0).grid(column=0, row=99)
+
 
 def getConfig():
     global saveLocation
     global playlists
-    
-    with open('SpotifySync_Config.txt', 'r') as config:
-        config_lines = config.readlines()
+
+    try:
+        with open('SpotifySync_Config.txt', 'r') as config:
+            config_lines = config.readlines()
+    except:
+        setConfig()
+        return False
 
     gettingPlaylists = False
     for i in range(len(config_lines)):
-        if "___Save Location:" in config_lines[i]:
-            saveLocation = config_lines[i+1].strip()
-        elif "___Playlists:" in config_lines[i]:
-            gettingPlaylists = True
-        elif "___End of Playlists___" in config_lines[i]:
-            gettingPlaylists = False
+        try:
+            if "___Save Location:" in config_lines[i]:
+                saveLocation = config_lines[i+1].strip()
+                if "___Playlists:" in saveLocation:
+                    # if no save location there...
+                    setConfig()
+                    return False
+            elif "___Playlists:" in config_lines[i]:
+                gettingPlaylists = True
+            elif "___End of Playlists___" in config_lines[i]:
+                gettingPlaylists = False
 
-        if gettingPlaylists and "___Playlists:" not in config_lines[i]:
-            # divide line into playlist name and playlist url
-            playlist = config_lines[i].strip().split("|")
-            playlist = [elm.strip() for elm in playlist]
-            
-            playlist[0] = playlist[0].lower().replace(' ','-') #remove spaces
-            
-            if '?' in playlist[1]:
-                playlist[1] = playlist[1][:playlist[1].find('?')] #remove identifier
+            if gettingPlaylists and "___Playlists:" not in config_lines[i]:
+                # divide line into playlist name and playlist url
+                playlist = config_lines[i].strip().split("|")
+                playlist = [elm.strip() for elm in playlist]
                 
-            playlists.append(playlist)
+                playlist[0] = playlist[0].lower().replace(' ','-') #remove spaces
+                
+                if '?' in playlist[1]:
+                    playlist[1] = playlist[1][:playlist[1].find('?')] #remove identifier
+                    
+                playlists.append(playlist)
+        except IndexError:
+            setConfig()
+            return False
 
 
 def download(playlist):
@@ -75,7 +154,7 @@ def download(playlist):
             #else:
                 #print(result)
         except:
-            print("\nERROR, skipping song - check {} for failures".format(os.getcwd()+playlist[0]+'_failed.txt'))
+            print("\nERROR, skipping song - check {} for failures".format(os.getcwd()+'/'+playlist[0]+'_failed.txt'))
             with open(playlist[0]+'_failed.txt', 'a') as failed:
                 failed.write("ERROR on song: {}".format( pop(playlist[0]+'.txt') ))
     print("\n----- Completed. -----\n\n")
@@ -134,7 +213,8 @@ def updateList(playlist):
 
 
 def sync():
-    getConfig()
+    if getConfig() is False:
+        return
     
     for playlist in playlists:
         print("Syncing '{}'".format(playlist[0]), end='')
