@@ -4,7 +4,7 @@ import sys, os
 
 saveLocation = ''
 
-cd = os.path.expanduser("~")+'/spotify-downloader/'
+cd = '' #os.path.expanduser("~")+'/spotify-downloader/'
 spotdl = 'python3 {}spotdl.py'.format(cd)
 
 playlists = []
