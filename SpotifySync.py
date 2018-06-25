@@ -4,8 +4,8 @@ import sys, os
 
 saveLocation = ''
 
-spotdl_loc = ''
-spotdl = 'python3 {}spotdl.py'.format(spotdl_loc)
+cd = os.path.expanduser("~")+'/spotify-downloader/'
+spotdl = 'python3 {}spotdl.py'.format(cd)
 
 playlists = []
 
@@ -49,7 +49,7 @@ clicking 'share' and finding the 'copy playlist link' button.
     getPlaylist()
 
     # save
-    with open('SpotifySync_Config.txt', 'w') as config:
+    with open(cd+'SpotifySync_Config.txt', 'w') as config:
         config.write("___Save Location:\n")
         config.write(saveLoc+"/\n")
         config.write("___Playlists:\n")
@@ -114,7 +114,7 @@ def setConfig():
     saveLab.grid(column=3, row=1)
     def save():
         global saveLab, saveLoc
-        with open('SpotifySync_Config.txt', 'w') as config:
+        with open(cd+'SpotifySync_Config.txt', 'w') as config:
             config.write("___Save Location:\n")
             config.write(saveLoc+"/\n")
             config.write("___Playlists:\n")
@@ -136,7 +136,7 @@ def getConfig():
     global playlists
 
     try:
-        with open('SpotifySync_Config.txt', 'r') as config:
+        with open(cd+'SpotifySync_Config.txt', 'r') as config:
             config_lines = config.readlines()
     except:
         setConfig()

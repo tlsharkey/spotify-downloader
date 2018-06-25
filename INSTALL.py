@@ -24,7 +24,8 @@ if OS == 'linux' or OS == 'darwin' or OS == 'dos' or OS == 'windows':
 	
     # shell script
     with open('../SpotifySync.sh', 'w') as file:
-        file.write('python3 ~/spotify-downloader/SpotifySync.py')
+	file.write('cd ~/spotify-downloader')
+        file.write('python3 SpotifySync.py')
     os.chmod("../SpotifySync.sh", 777)
     
     print("\nyou can now delete this folder. You will find a shell script that will run the sync in the directory above this (directory selected for download)")
