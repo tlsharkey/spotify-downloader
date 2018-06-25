@@ -7,7 +7,7 @@ print("checking your libraries and installing dependencies")
 if OS == 'linux':
     installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
     os.system("cd")
-    os.system("cp -r {} .".format(installed_directory))
+    os.system("cp -r {} ~/".format(installed_directory))
 
     # ffmpeg
     os.system("sudo apt-get install ffmpeg")
