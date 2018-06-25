@@ -4,28 +4,32 @@ OS = sys.platform.lower()
 print("you seem to be running", OS)
 print("checking your libraries and installing dependencies")
 
-if OS == 'linux' or OS == 'darwin':
-    installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
+if OS == 'linux' or OS == 'darwin' or OS == 'dos' or OS == 'windows':
+    import shutil
+    installed_dir = os.getcwd()[:os.getcwd().rfind('/')]
     path = os.getcwd()
-    print(installed_directory)
-    print("\n\n")
-    os.system('mkdir ~/spotify-downloader')
-    os.system("cp -r * ~/spotify-downloader")
-    print("Installing... You may be asked for a password.")
-    # ffmpeg
+    shutil.copytree(os.getcwd(), os.path.expanduser("~")+"/spotify-downloader")
+
+    print("\nInstalling... You may be asked for a password.")
+    #ffmpeg
     if OS == 'linux':
         os.system("sudo apt-get install ffmpeg > /dev/null")
-    else:
+    elif OS == 'darwin':
         os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac > /dev/null")
+    elif OS == 'windows':
+        os.system("""@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" """.strip(' '))
+        os.system("choco install ffmpeg")
     # python libs
     pip.main(['install', '-q', '-Ur', 'requirements.txt'])
 	
-	# shell script
+    # shell script
     with open('../SpotifySync.sh', 'w') as file:
         file.write('python3 ~/spotify-downloader/SpotifySync.py')
-
-    print("\n\n")
-    print("you can now delete this folder. You will find a shell script that will run the sync in the directory above this (directory selected for download)")
+    os.chmod("../SpotifySync.sh", 777)
+    
+    print("\nyou can now delete this folder. You will find a shell script that will run the sync in the directory above this (directory selected for download)")
+	
+	
 elif OS == 'dos':
     #ffmpeg
     print("OH WINDOWS... WHY.")

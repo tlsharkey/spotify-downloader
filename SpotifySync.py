@@ -18,9 +18,7 @@ def setConfig_commandLine():
         saveLoc = str(input("path: "))
         if saveLoc == 'q':
             sys.quit()
-        try:
-            os.chdir(saveLoc)
-        except:
+        if not os.path.exists(saveLoc):
             print("That location doesn't exist. Enter a currently existing path")
             print("Enter the full path examples: /home/username/Music  or  C:/Users/usename/Music")
             print("typing 'q' will exit")
