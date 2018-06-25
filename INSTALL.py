@@ -4,42 +4,30 @@ OS = sys.platform.lower()
 print("you seem to be running", OS)
 print("checking your libraries and installing dependencies")
 
-if OS == 'linux':
+if OS == 'linux' or OS == 'darwin':
     installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
+    path = os.getcwd()
     print(installed_directory)
     print("\n\n\n")
-    os.system("cd")
-    os.system("cp -r {} ~/".format(installed_directory))
-
+    os.chdir("..")
+    os.system("cp -r spotify-downloader ~") #.format(installed_directory+"/spotify-downloader-master"))
+    
     # ffmpeg
-    os.system("sudo apt-get install ffmpeg")
+    if OS == 'linux':
+        os.system("sudo apt-get install ffmpeg")
+    else:
+        os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac")
     # python libs
+    os.chdir(path)
+    print(os.getcwd())
     pip.main(['install', '-U', '-r', 'requirements.txt'])
 
     with open(installed_directory+'/SpotifySync.sh', 'w') as file:
-        file.write('python3 ~/soitify-downloader/SpotifySync')
+        file.write('python3 ~/spotify-downloader/SpotifySync.py')
 
     print("\n\n\n")
     print("you can now delete this folder. You will find a shell script that will run the sync in the download directory")
-    
-elif OS == 'darwin':
-    installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
-    os.system("cd")
-    os.system("cp -r {} .".format(installed_directory))
-    
-    # ffmpeg
-    os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac")
-    # python libs
-    pip.main(['install', '-U', '-r', 'requirements.txt'])
-
-    with open(installed_directory+'/SpotifySync.sh', 'w') as file:
-        file.write('python3 ~/soitify-downloader/SpotifySync')
-
-    print("you can now delete this folder. You will find a shell script that will run the sync in the download directory")
-    
 elif OS == 'dos':
-    
-    
     #ffmpeg
     print("OH WINDOWS... WHY.")
     print("download from this link: http://ffmpeg.zeranoe.com/builds/")

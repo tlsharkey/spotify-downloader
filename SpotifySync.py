@@ -9,9 +9,62 @@ spotdl = 'python3 {}spotdl.py'.format(spotdl_loc)
 
 playlists = []
 
+def setConfig_commandLine():
+    print("\n\n\nThe Graphic Interface failed, here is the backup")
+    print("This is the configuration program for syncing spotify playlists")
+    print("First,", end=' ')
+    def getSaveLoc():
+        print("where would you like to save the downloaded songs? (FULL PATH, please)")
+        saveLoc = str(input("path: "))
+        if saveLoc == 'q':
+            sys.quit()
+        try:
+            os.chdir(saveLoc)
+        except:
+            print("That location doesn't exist. Enter a currently existing path")
+            print("Enter the full path examples: /home/username/Music  or  C:/Users/usename/Music")
+            print("typing 'q' will exit")
+            getSaveLoc()
+        return saveLoc
 
+    saveLoc = getSaveLoc()
+    
+    playlists[]
+    def getPlaylist():
+        name = str(input("Playlist Name: "))
+        link = str(input("Playlist URL: "))
+        playlists.append((name, link))
+        another = str(input("Add another playlist?\n\t (y/n) --> "))
+        if another[0].lower() == 'y':
+            getPlaylist()
+
+    print("""\n\n ----- PLAYLISTS -----
+This program only syncs playlists.
+You can put all of your music into a playlist, and sync that if you choose.
+If you don't want to do that, you can make your music public and download it.
+
+To sync playlists, the name of the playlist, and its link is needed.
+The name is simply the name you see in the spotify app
+the link can be gotten by opening the playlist, clicking the '...',
+clicking 'share' and finding the 'copy playlist link' button.
+""")
+    getPlaylist()
+
+    # save
+    with open('SpotifySync_Config.txt', 'w') as config:
+        config.write("___Save Location:\n")
+        config.write(saveLoc+"/\n")
+        config.write("___Playlists:\n")
+        for playlist in playlists:
+            config.write(playlist[0].get() + " | " + playlist[1].get() + "\n")
+        config.write("___End of Playlists___")
+    
 def setConfig():
-    import tkinter as tk
+    try:
+        import tkinter as tk
+    except ModuleNotFoundError:
+        setConfig_commandLine()
+        return
     from tkinter import filedialog
     global rows_used, playlist_data, saveLab, saveLoc
     
