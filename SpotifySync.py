@@ -29,7 +29,7 @@ def setConfig_commandLine():
 
     saveLoc = getSaveLoc()
     
-    playlists[]
+    playlists = []
     def getPlaylist():
         name = str(input("Playlist Name: "))
         link = str(input("Playlist URL: "))

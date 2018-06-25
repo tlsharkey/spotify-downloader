@@ -10,17 +10,21 @@ if OS == 'linux' or OS == 'darwin':
     print(installed_directory)
     print("\n\n\n")
     os.chdir("..")
-    os.system("cp -r spotify-downloader ~") #.format(installed_directory+"/spotify-downloader-master"))
+    if "spotify-downloader-master" in os.listdir():
+        os.system('mkdir ~/spotify-downloader')
+        os.system("cp -r spotify-downloader-master/* ~/spotify-downloader")
+    elif "spotify-downloader" in os.listdir():
+        os.system("cp -r spotify-downloader ~")
     
     # ffmpeg
     if OS == 'linux':
-        os.system("sudo apt-get install ffmpeg")
+        os.system("sudo apt-get install ffmpeg > /dev/null")
     else:
-        os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac")
+        os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac > /dev/null")
     # python libs
     os.chdir(path)
     print(os.getcwd())
-    pip.main(['install', '-U', '-r', 'requirements.txt'])
+    pip.main(['install', '-U', '-r', '-q', 'requirements.txt'])
 
     with open(installed_directory+'/SpotifySync.sh', 'w') as file:
         file.write('python3 ~/spotify-downloader/SpotifySync.py')
