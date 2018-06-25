@@ -8,28 +8,23 @@ if OS == 'linux' or OS == 'darwin':
     installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
     path = os.getcwd()
     print(installed_directory)
-    print("\n\n\n")
-    os.chdir("..")
-    if "spotify-downloader-master" in os.listdir():
-        os.system('mkdir ~/spotify-downloader')
-        os.system("cp -r spotify-downloader-master/* ~/spotify-downloader")
-    elif "spotify-downloader" in os.listdir():
-        os.system("cp -r spotify-downloader ~")
-    
+    print("\n\n")
+    os.system('mkdir ~/spotify-downloader')
+    os.system("cp -r * ~/spotify-downloader")
+
+    print("Installing... You may be asked for a password.")
     # ffmpeg
     if OS == 'linux':
         os.system("sudo apt-get install ffmpeg > /dev/null")
     else:
         os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac > /dev/null")
     # python libs
-    os.chdir(path)
-    print(os.getcwd())
-    pip.main(['install', '-U', '-r', '-q', 'requirements.txt'])
+    pip.main(['install', '-q', '-Ur', 'requirements.txt'])
 
-    with open(installed_directory+'/SpotifySync.sh', 'w') as file:
+    with open('SpotifySync.sh', 'w') as file:
         file.write('python3 ~/spotify-downloader/SpotifySync.py')
 
-    print("\n\n\n")
+    print("\n\n")
     print("you can now delete this folder. You will find a shell script that will run the sync in the download directory")
 elif OS == 'dos':
     #ffmpeg
