@@ -6,6 +6,8 @@ print("checking your libraries and installing dependencies")
 
 if OS == 'linux':
     installed_directory = os.getcwd()[:os.getcwd().rfind('/')]
+    print(installed_directory)
+    print("\n\n\n")
     os.system("cd")
     os.system("cp -r {} ~/".format(installed_directory))
 
@@ -17,6 +19,7 @@ if OS == 'linux':
     with open(installed_directory+'/SpotifySync.sh', 'w') as file:
         file.write('python3 ~/soitify-downloader/SpotifySync')
 
+    print("\n\n\n")
     print("you can now delete this folder. You will find a shell script that will run the sync in the download directory")
     
 elif OS == 'darwin':
