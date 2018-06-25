@@ -56,8 +56,10 @@ clicking 'share' and finding the 'copy playlist link' button.
         config.write(saveLoc+"/\n")
         config.write("___Playlists:\n")
         for playlist in playlists:
-            config.write(playlist[0].get() + " | " + playlist[1].get() + "\n")
+            config.write(playlist[0] + " | " + playlist[1] + "\n")
         config.write("___End of Playlists___")
+
+    return
     
 def setConfig():
     try:
