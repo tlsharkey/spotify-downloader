@@ -11,7 +11,6 @@ if OS == 'linux' or OS == 'darwin':
     print("\n\n")
     os.system('mkdir ~/spotify-downloader')
     os.system("cp -r * ~/spotify-downloader")
-
     print("Installing... You may be asked for a password.")
     # ffmpeg
     if OS == 'linux':
@@ -20,12 +19,13 @@ if OS == 'linux' or OS == 'darwin':
         os.system("brew install ffmpeg --with-libmp3lame --with-libass --with-open --with-fdk-aac > /dev/null")
     # python libs
     pip.main(['install', '-q', '-Ur', 'requirements.txt'])
-
-    with open('SpotifySync.sh', 'w') as file:
+	
+	# shell script
+    with open('../SpotifySync.sh', 'w') as file:
         file.write('python3 ~/spotify-downloader/SpotifySync.py')
 
     print("\n\n")
-    print("you can now delete this folder. You will find a shell script that will run the sync in the download directory")
+    print("you can now delete this folder. You will find a shell script that will run the sync in the directory above this (directory selected for download)")
 elif OS == 'dos':
     #ffmpeg
     print("OH WINDOWS... WHY.")
