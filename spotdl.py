@@ -150,35 +150,34 @@ def download_single(raw_song, number=None):
 
     print("SONGNAME:", songname)
 
-    #try:
-    if not check_exists(songname, raw_song, meta_tags):
-        # deal with file formats containing slashes to non-existent directories
-        songpath = os.path.join(const.args.folder, os.path.dirname(songname))
-        os.makedirs(songpath, exist_ok=True)
-        input_song = songname + const.args.input_ext
-        output_song = songname + const.args.output_ext
-        if youtube_tools.download_song(input_song, content):
-            print('')
-            try:
-                convert.song(input_song, output_song, const.args.folder,
-                             avconv=const.args.avconv)
-            except FileNotFoundError:
-                print("\nFAILED - skipping conversion\n")
-                encoder = 'avconv' if const.args.avconv else 'ffmpeg'
-                log.warning('Could not find {0}, skipping conversion'.format(encoder))
-                const.args.output_ext = const.args.input_ext
-                output_song = songname + const.args.output_ext
+    try:
+        if not check_exists(songname, raw_song, meta_tags):
+            # deal with file formats containing slashes to non-existent directories
+            songpath = os.path.join(const.args.folder, os.path.dirname(songname))
+            os.makedirs(songpath, exist_ok=True)
+            input_song = songname + const.args.input_ext
+            output_song = songname + const.args.output_ext
+            if youtube_tools.download_song(input_song, content):
+                print('')
+                try:
+                    convert.song(input_song, output_song, const.args.folder,
+                                 avconv=const.args.avconv)
+                except FileNotFoundError:
+                    print("\nFAILED - skipping conversion\n")
+                    encoder = 'avconv' if const.args.avconv else 'ffmpeg'
+                    log.warning('Could not find {0}, skipping conversion'.format(encoder))
+                    const.args.output_ext = const.args.input_ext
+                    output_song = songname + const.args.output_ext
 
-            if not const.args.input_ext == const.args.output_ext:
-                os.remove(os.path.join(const.args.folder, input_song))
-            if not const.args.no_metadata and meta_tags is not None:
-                metadata.embed(os.path.join(const.args.folder, output_song), meta_tags)
-            print("SUCCESS Marker")
-            return True
-    #except ValueError:
-    #    print("FAILED to get artwork")
-    #    return
-    print("SUCCESS")
+                if not const.args.input_ext == const.args.output_ext:
+                    os.remove(os.path.join(const.args.folder, input_song))
+                if not const.args.no_metadata and meta_tags is not None:
+                    metadata.embed(os.path.join(const.args.folder, output_song), meta_tags)
+                print("SUCCESS")
+                return True
+    except ValueError:
+        print("FAILED to get artwork")
+        return True
 
 
 def main():
