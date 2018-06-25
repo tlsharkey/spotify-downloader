@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import os, sys, pip
 
 OS = sys.platform.lower()
@@ -24,7 +26,7 @@ if OS == 'linux' or OS == 'darwin' or OS == 'dos' or OS == 'windows':
 	
     # shell script
     with open('../SpotifySync.sh', 'w') as file:
-	file.write('cd ~/spotify-downloader')
+        file.write('cd ~/spotify-downloader\n')
         file.write('python3 SpotifySync.py')
     os.chmod("../SpotifySync.sh", 777)
     
